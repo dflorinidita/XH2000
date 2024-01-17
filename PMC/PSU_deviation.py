@@ -20,11 +20,21 @@ def calculate_deviations(psu_values):
         if not cpsm:
             continue
         average_consumption = sum(cpsm) / len(cpsm)
-        print(f"CPSM{i}: ", end='')
+        deviation_line = f"CPSM{i}: "
+        red_line = False
+
         for j, consumption in enumerate(cpsm):
             deviation = ((consumption - average_consumption) / average_consumption) * 100
-            print(f"{consumption} ({deviation:.2f}%), ", end='')
-        print(f"Subtotal: {sum(cpsm)}")
+            deviation_line += f"{consumption} ({deviation:.2f}%), "
+            if abs(deviation) > 20:
+                red_line = True
+        
+        deviation_line += f"Subtotal: {sum(cpsm)}"
+        
+        if red_line:
+            print(f"\033[91m{deviation_line}\033[0m")  # Red color
+        else:
+            print(deviation_line)
 
 def analyze_psu_consumption(hmc):
     try:
